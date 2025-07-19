@@ -17,7 +17,7 @@ export const StandbyService: React.FC = () => {
       }
     >
       <Button onClick={() => set(!isStandby)}>
-        {isStandby ? "Disable Standby" : "Enable Standby"}
+        {isStandby ? "Disable" : "Enable"}
       </Button>
     </ServiceCard>
   );

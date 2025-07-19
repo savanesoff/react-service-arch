@@ -7,10 +7,7 @@ export const EnvService: React.FC = () => {
   const { data, setEnv, ...queryStatus } = useEnv();
 
   return (
-    <ServiceCard
-      title={`Env Service${data?.env ? ` (${data.env})` : ""}`}
-      status={queryStatus}
-    >
+    <ServiceCard title={`Env Service`} status={queryStatus}>
       <Select
         title="Select Environment"
         onChange={setEnv}

@@ -8,9 +8,9 @@ export const AuthService: React.FC = () => {
 
   return (
     <ServiceCard
-      title={`Auth Service ${
+      title={`Auth Service (${
         data?.user ? `logged in as: ${data.user.name}` : "logged out"
-      }`}
+      })`}
       status={!login.data ? login : logout}
     >
       <Button
