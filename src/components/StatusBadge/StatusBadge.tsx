@@ -20,6 +20,7 @@ const statusMap = {
   success: "bg-green-200 text-green-800 border-green-400",
   error: "bg-red-200 text-red-800 border-red-400",
   inactive: "bg-gray-200 text-gray-800 border-gray-400",
+  active: "bg-green-200 text-green-800 border-green-400",
   unknown: "bg-gray-100 text-gray-500 border-gray-200",
 };
 
@@ -41,6 +42,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
       if (status.isError) return "error";
       if (status.isSuccess) return "success";
       if (!status.isEnabled) return "inactive";
+      if (status.isEnabled) return "active";
       return "inactive";
     }
     if (isMutationStatus(status)) {

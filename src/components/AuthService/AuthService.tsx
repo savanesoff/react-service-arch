@@ -2,9 +2,11 @@ import React from "react";
 import { ServiceCard } from "../ServiceCard";
 import { Button } from "../Button";
 import { useAuth } from "../../hooks/auth";
+import { useStandby } from "../../hooks/standby/useStandby";
 
 export const AuthService: React.FC = () => {
   const { data, login, logout } = useAuth();
+  const { isStandby } = useStandby();
 
   return (
     <ServiceCard
@@ -25,6 +27,7 @@ export const AuthService: React.FC = () => {
             });
           }
         }}
+        disabled={isStandby}
       >
         {data ? "Logout" : "Login"}
       </Button>

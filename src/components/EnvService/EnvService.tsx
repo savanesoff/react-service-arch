@@ -7,9 +7,12 @@ export const EnvService: React.FC = () => {
   const { data, setEnv, ...queryStatus } = useEnv();
 
   return (
-    <ServiceCard title={`Env Service`} status={queryStatus}>
+    <ServiceCard
+      title={`Env Service: (${data?.env || "initializing"})`}
+      status={queryStatus}
+    >
       <Select
-        title="Select Environment"
+        title={`Select Environment`}
         onChange={setEnv}
         options={["production", "development", "staging"]}
         disabled={queryStatus.isLoading}
