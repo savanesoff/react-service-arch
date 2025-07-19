@@ -14,7 +14,7 @@ function App() {
       <AppConfigProvider>
         <EnvProvider invalidateQueries={["auth"]} env="staging">
           <AuthProvider invalidateQueries={["account"]}>
-            <AccountProvider invalidateQueries={["vod"]}>
+            <AccountProvider>
               <StandbyProvider invalidateQueries={["auth"]}>
                 <ServiceDemo />
               </StandbyProvider>

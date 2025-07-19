@@ -41,16 +41,16 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
       if (status.isError) return "error";
       if (status.isSuccess) return "success";
       if (!status.isEnabled) return "inactive";
-      return "unknown";
+      return "inactive";
     }
     if (isMutationStatus(status)) {
       if (status.isPending) return "loading";
       if (status.isError) return "error";
       if (status.isSuccess) return "success";
       if (status.isPaused) return "inactive";
-      return "unknown";
+      return "inactive";
     }
-    return "unknown";
+    return "inactive";
   }, [status]);
   return (
     <span

@@ -3,15 +3,20 @@ import { EnvService } from "../EnvService";
 import { StandbyService } from "../StandbyService";
 import { AuthService } from "../AuthService";
 import { VodService } from "../VodService";
+import { AccountService } from "../AccountService";
 
 export const ServiceDemo: React.FC = () => (
-  <div className="font-mono max-w-xl mx-auto my-8">
+  <div className="font-mono px-16 mx-auto my-8">
     <h2 className="text-2xl font-bold mb-6 text-center">
       React Service Architecture Demo
     </h2>
-    <EnvService />
-    <AuthService />
+    <div className=" flex flex-row gap-4">
+      <EnvService />
+      <AuthService />
+      <AccountService />
+      <StandbyService />
+    </div>
+
     <VodService />
-    <StandbyService />
   </div>
 );

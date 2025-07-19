@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { type ReactNode } from "react";
 import {
   AuthContext,
   type AuthData,
@@ -39,24 +39,20 @@ export const AuthProvider = ({
         return fakeLogin(props);
       });
     },
-    onSuccess: () => {
-      // Invalidate queries after successful login if needed
-      queryClient.invalidateQueries({
-        queryKey: invalidateQueries,
-      });
-    },
   });
 
   // Logout mutation
   const logout = useMutation<LogoutData, LogoutError, void>({
     mutationKey: ["logout"],
     mutationFn: async (): Promise<LogoutData> => {
+      const data = await network().then(fakeLogout);
       login.reset(); // Reset login state
       // Invalidate login data by removing it from the cache
-      queryClient.invalidateQueries({
-        queryKey: invalidateQueries,
-      });
-      return network().then(fakeLogout);
+      //   queryClient.invalidateQueries({
+      //     queryKey: invalidateQueries,
+      //   });
+      queryClient.removeQueries({ queryKey: [...invalidateQueries, "login"] });
+      return data;
     },
   });
 

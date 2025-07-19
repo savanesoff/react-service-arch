@@ -23,7 +23,7 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => (
   <button
-    className={`${base} ${variants[variant]} ${className}`}
+    className={`${base} ${variants[variant]} ${className} cursor-pointer`}
     disabled={disabled || loading}
     {...props}
   >

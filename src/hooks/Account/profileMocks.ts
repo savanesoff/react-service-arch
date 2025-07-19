@@ -1,13 +1,13 @@
 import type { Genre } from "../../types/Genres";
 import type { ProfileData } from "./AccountContext";
 
-const generateAvatarUrl = (gender: { gender: "male" | "female" }): string => {
+const generateAvatarUrl = ({ gender }: { gender: string }): string => {
   const randomId = Math.floor(Math.random() * 100);
-  return `https://randomuser.me/api/portraits/${gender}s/${randomId}.jpg`;
+  return `https://randomuser.me/api/portraits/${gender}/${randomId}.jpg`;
 };
 
 export const generateProfile = ({ id }: { id: string }): ProfileData => {
-  const gender = Math.random() > 0.5 ? "male" : "female";
+  const gender = Math.random() > 0.5 ? "men" : "women";
   const names = ["Alice", "Bob", "Charlie", "Diana", "Eve"];
 
   const preferences: Genre[] = [
@@ -29,7 +29,7 @@ export const generateProfile = ({ id }: { id: string }): ProfileData => {
     .slice(0, Math.floor(Math.random() * 3) + 1); // random preferences
 
   const avatarUrl = generateAvatarUrl({ gender });
-
+  console.log(`Generated avatar URL: ${avatarUrl}`);
   return {
     id,
     name: names[Math.floor(Math.random() * names.length)],

@@ -16,6 +16,7 @@ export const EnvService: React.FC = () => {
         onChange={setEnv}
         options={["production", "development", "staging"]}
         disabled={queryStatus.isLoading}
+        selected={data?.env}
       />
     </ServiceCard>
   );

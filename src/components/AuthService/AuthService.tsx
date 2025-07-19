@@ -11,15 +11,19 @@ export const AuthService: React.FC = () => {
       title={`Auth Service ${
         data?.user ? `logged in as: ${data.user.name}` : "logged out"
       }`}
-      status={!data ? login : logout}
+      status={!login.data ? login : logout}
     >
       <Button
         variant="danger"
         onClick={() => {
           if (data) {
             logout.mutateAsync();
+          } else {
+            login.mutateAsync({
+              username: Math.random().toString(36).substring(2, 10),
+              password: "password",
+            });
           }
-          login.mutateAsync({ username: "testuser", password: "password" });
         }}
       >
         {data ? "Logout" : "Login"}

@@ -13,7 +13,7 @@ export type LogoutError = {
   message: string;
   code?: string;
 };
-export type AuthData = { user: { name: string } | null; status: string };
+export type AuthData = { user: { name: string }; status: string };
 export type LogoutData = { message: string; code?: string };
 export type AuthContextValue = {
   login: UseMutationResult<AuthData, LoginError, LoginProps>;

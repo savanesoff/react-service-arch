@@ -9,8 +9,13 @@ import {
 } from "./AccountContext";
 import { useEffect, useState } from "react";
 import { generateProfile } from "./profileMocks";
+import type { AuthData } from "../auth";
 
-const fetchAccount = async (): Promise<AccountData> => {
+const fetchAccount = async ({
+  authData,
+}: {
+  authData: AuthData;
+}): Promise<AccountData> => {
   // Simulate fetching user data from an API
   // Generate random user data for demonstration
   const randomId = `user${Math.floor(Math.random() * 10000)}`;
@@ -25,12 +30,12 @@ const fetchAccount = async (): Promise<AccountData> => {
 
   const statuses: SubscriptionStatus[] = ["active", "inactive", "expired"];
   const idx = Math.floor(Math.random() * usernames.length);
-  const profiles: ProfileData[] = Array.from(
-    { length: Math.floor(Math.random() * 5) + 1 },
-    () => generateProfile({ id: Math.random().toString(36).substring(2, 15) })
+  const profiles: ProfileData[] = Array.from({ length: 3 }, () =>
+    generateProfile({ id: Math.random().toString(36).substring(2, 15) })
   );
 
   profiles[0].primary = true; // Mark the first profile as primary
+  profiles[0].name = authData.user.name;
   return {
     id: randomId,
     username: usernames[idx],
@@ -42,7 +47,7 @@ const fetchAccount = async (): Promise<AccountData> => {
 
 export const AccountProvider = ({
   children,
-  invalidateQueries = ["vod"],
+  invalidateQueries,
 }: {
   children: React.ReactNode;
   invalidateQueries?: string[];
@@ -53,11 +58,14 @@ export const AccountProvider = ({
   const [activeProfile, setActiveProfile] = useState<ProfileData | null>(null);
 
   const query = useQuery<AccountData>({
-    queryKey: ["account"],
-    enabled: login.isSuccess, // Only fetch account if user is logged in
+    queryKey: ["account", login.data],
+    enabled: !!login.data, // Only fetch account if user is logged in
     queryFn: async () => {
+      if (!login.data) {
+        throw new Error("User not logged in");
+      }
       clientQuery.invalidateQueries({ queryKey: invalidateQueries });
-      return network().then(fetchAccount);
+      return network().then(() => fetchAccount({ authData: login.data }));
     },
   });
 
@@ -69,9 +77,16 @@ export const AccountProvider = ({
       if (primaryProfile) {
         setActiveProfile(primaryProfile);
       }
+    } else {
+      setActiveProfile(null);
     }
   }, [query.data]);
 
+  useEffect(() => {
+    if (!login.data) {
+      setActiveProfile(null);
+    }
+  }, [login.data]);
   return (
     <AccountContext.Provider
       value={{
