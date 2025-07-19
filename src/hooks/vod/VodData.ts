@@ -88,17 +88,7 @@ export const VodMockData: VodAsset[] = [
     genre: ["Drama", "Family"],
     sourceUrl: "https://www.pexels.com/video/people-laughing-856993/",
   },
-  {
-    id: "8",
-    title: "Underwater Wonders",
-    description: "A documentary exploring ocean life.",
-    thumbnailUrl:
-      "https://cdn.pixabay.com/video/2022/10/11/136453-749527838_large.jpg",
-    duration: 80,
-    publishedAt: "2023-08-30T00:00:00Z",
-    genre: ["Documentary", "Nature"],
-    sourceUrl: "https://pixabay.com/videos/id-136453/",
-  },
+
   {
     id: "9",
     title: "Haunted Manor",

@@ -12,15 +12,15 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AppConfigProvider>
-        <EnvProvider invalidateQueries={["login"]} env="staging">
-          <AuthProvider invalidateQueries={["account"]}>
-            <AccountProvider>
-              <StandbyProvider invalidateQueries={["auth"]}>
+        <StandbyProvider>
+          <EnvProvider env="staging">
+            <AuthProvider>
+              <AccountProvider>
                 <ServiceDemo />
-              </StandbyProvider>
-            </AccountProvider>
-          </AuthProvider>
-        </EnvProvider>
+              </AccountProvider>
+            </AuthProvider>
+          </EnvProvider>
+        </StandbyProvider>
       </AppConfigProvider>
     </QueryClientProvider>
   );

@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import {
   AuthContext,
   type AuthData,
@@ -7,9 +7,10 @@ import {
   type LogoutData,
   type LogoutError,
 } from "./AuthContext";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useAppConfig } from "../AppConfig";
 import { useEnv } from "../env/useEnv";
+import { useStandby } from "../standby/useStandby";
 
 const fakeLogin = async (props: LoginProps): Promise<AuthData> => {
   return {
@@ -22,16 +23,10 @@ const fakeLogout = async (): Promise<LogoutData> => {
   return { message: "logged-out" };
 };
 
-export const AuthProvider = ({
-  invalidateQueries = ["account"],
-  children,
-}: {
-  children: ReactNode;
-  invalidateQueries?: string[];
-}) => {
-  const queryClient = useQueryClient();
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { data: env } = useEnv();
   const { network } = useAppConfig();
+  const { isStandby } = useStandby();
 
   // Login mutation
   const login = useMutation<AuthData, LoginError, LoginProps>({
@@ -47,17 +42,16 @@ export const AuthProvider = ({
   const logout = useMutation<LogoutData, LogoutError, void>({
     mutationKey: ["logout"],
     mutationFn: async (): Promise<LogoutData> => {
-      const data = await network().then(fakeLogout);
-      login.reset(); // Reset login state
-      // Invalidate login data by removing it from the cache
-      //   queryClient.invalidateQueries({
-      //     queryKey: invalidateQueries,
-      //   });
-      queryClient.removeQueries({ queryKey: [...invalidateQueries, "login"] });
-      return data;
+      login.reset();
+      return network().then(fakeLogout);
     },
   });
 
+  useEffect(() => {
+    if (isStandby) {
+      logout.mutate();
+    }
+  }, [isStandby, logout]);
   return (
     <AuthContext.Provider
       value={{
