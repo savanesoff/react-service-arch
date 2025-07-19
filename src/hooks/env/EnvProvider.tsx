@@ -18,7 +18,7 @@ const fetchEnv = async (env: EnvType): Promise<EnvData> => {
 
 export const EnvProvider = ({
   children,
-  invalidateQueries = ["auth"],
+  invalidateQueries = ["login"],
   env: envProp = "staging",
 }: {
   children: ReactNode;
@@ -38,6 +38,7 @@ export const EnvProvider = ({
       setEnvState(newEnv);
       // Invalidate the 'profile' query when env changes
       queryClient.invalidateQueries({ queryKey: invalidateQueries });
+      queryClient.removeQueries({ queryKey: invalidateQueries });
     },
     [invalidateQueries, queryClient]
   );
