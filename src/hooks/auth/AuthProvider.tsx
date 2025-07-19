@@ -1,26 +1,75 @@
-import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import { AuthContext, type AuthData } from "./AuthContext";
-import { useEnv } from "../env/useEnv";
-import { useStandby } from "../standby/useStandby";
+import type { ReactNode } from "react";
+import {
+  AuthContext,
+  type AuthData,
+  type LoginError,
+  type LoginProps,
+  type LogoutData,
+  type LogoutError,
+} from "./AuthContext";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAppConfig } from "../AppConfig";
 
-const fetchAuth = async (env: string, standby: boolean): Promise<AuthData> => {
-  await new Promise((r) => setTimeout(r, 300));
-  if (standby) return { user: null, status: "standby" };
-  if (env === "production")
-    return { user: { name: "Sam" }, status: "logged-in" };
-  return { user: null, status: "logged-out" };
+const fakeLogin = async (props: LoginProps): Promise<AuthData> => {
+  return {
+    user: { name: props.username },
+    status: "logged-in",
+  };
 };
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const env = useEnv();
-  const standby = useStandby();
-  const envData = env.data;
-  const standbyData = standby.data;
-  const query = useQuery({
-    queryKey: ["auth", envData?.env, standbyData?.standby],
-    queryFn: () => fetchAuth(envData?.env ?? "", standbyData?.standby ?? false),
-    enabled: !!envData && standbyData !== undefined,
+const fakeLogout = async (): Promise<LogoutData> => {
+  return { message: "logged-out" };
+};
+
+export const AuthProvider = ({
+  invalidateQueries = ["account"],
+  children,
+}: {
+  children: ReactNode;
+  invalidateQueries?: string[];
+}) => {
+  const queryClient = useQueryClient();
+  const { network } = useAppConfig();
+
+  // Login mutation
+  const login = useMutation<AuthData, LoginError, LoginProps>({
+    mutationKey: ["login"],
+    mutationFn: async (props: LoginProps): Promise<AuthData> => {
+      return network().then(() => {
+        return fakeLogin(props);
+      });
+    },
+    onSuccess: () => {
+      // Invalidate queries after successful login if needed
+      queryClient.invalidateQueries({
+        queryKey: invalidateQueries,
+      });
+    },
   });
-  return <AuthContext.Provider value={query}>{children}</AuthContext.Provider>;
+
+  // Logout mutation
+  const logout = useMutation<LogoutData, LogoutError, void>({
+    mutationKey: ["logout"],
+    mutationFn: async (): Promise<LogoutData> => {
+      login.reset(); // Reset login state
+      // Invalidate login data by removing it from the cache
+      queryClient.invalidateQueries({
+        queryKey: invalidateQueries,
+      });
+      return network().then(fakeLogout);
+    },
+  });
+
+  return (
+    <AuthContext.Provider
+      value={{
+        data: login.data,
+        busy: login.isPending || logout.isPending,
+        login,
+        logout,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };

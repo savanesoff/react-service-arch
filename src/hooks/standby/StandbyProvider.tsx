@@ -1,19 +1,32 @@
-import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import { StandbyContext, type StandbyData } from "./StandbyContext";
-
-const fetchStandby = async (): Promise<StandbyData> => {
-  await new Promise((r) => setTimeout(r, 300));
-  return { standby: false };
-};
+import React, { useCallback, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { StandbyContext } from "./StandbyContext";
 
 export const StandbyProvider = ({
   children,
+  invalidateQueries = ["auth"],
 }: {
   children: React.ReactNode;
+  invalidateQueries?: string[];
 }) => {
-  const query = useQuery({ queryKey: ["standby"], queryFn: fetchStandby });
+  const queryClient = useQueryClient();
+  const [isStandby, setIsStandby] = useState(false);
+  const set = useCallback(
+    (newStandby: boolean) => {
+      setIsStandby(newStandby);
+      // Invalidate the 'auth' query when standby changes
+      queryClient.invalidateQueries({ queryKey: invalidateQueries });
+    },
+    [invalidateQueries, queryClient]
+  );
   return (
-    <StandbyContext.Provider value={query}>{children}</StandbyContext.Provider>
+    <StandbyContext.Provider
+      value={{
+        set,
+        isStandby,
+      }}
+    >
+      {children}
+    </StandbyContext.Provider>
   );
 };

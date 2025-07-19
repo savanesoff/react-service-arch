@@ -1,28 +1,22 @@
-import React from "react";
 import { ServiceCard } from "../ServiceCard";
-import { Button } from "../Button";
 import { useEnv } from "../../hooks/env/useEnv";
+import React from "react";
+import { Select } from "../Select";
 
 export const EnvService: React.FC = () => {
-  const env = useEnv();
-  const setEnv = (envValue: string) => {
-    window.fakeEnv = envValue;
-    env.refetch();
-  };
+  const { data, setEnv, ...queryStatus } = useEnv();
+
   return (
     <ServiceCard
-      title="Env Service"
-      status={env.isLoading ? "loading" : "good"}
-      statusText={env.isLoading ? "Loading" : env.data?.env || "-"}
+      title={`Env Service${data?.env ? ` (${data.env})` : ""}`}
+      status={queryStatus}
     >
-      <Button
-        onClick={() =>
-          setEnv(env.data?.env === "production" ? "dev" : "production")
-        }
-        loading={env.isLoading}
-      >
-        Set Env ({env.data?.env === "production" ? "dev" : "production"})
-      </Button>
+      <Select
+        title="Select Environment"
+        onChange={setEnv}
+        options={["production", "development", "staging"]}
+        disabled={queryStatus.isLoading}
+      />
     </ServiceCard>
   );
 };

@@ -2,32 +2,22 @@ import React from "react";
 import { ServiceCard } from "../ServiceCard";
 import { Button } from "../Button";
 import { useStandby } from "../../hooks/standby/useStandby";
+import type { StatusBadgeProps } from "../StatusBadge";
 
 export const StandbyService: React.FC = () => {
-  const standby = useStandby();
-  const setStandby = (standbyValue: boolean) => {
-    window.fakeStandby = standbyValue;
-    standby.refetch();
-  };
+  const { isStandby, set } = useStandby();
+
   return (
     <ServiceCard
-      title="Standby Service"
+      title={`Standby Service${isStandby ? " (ON)" : " (OFF)"}`}
       status={
-        standby.isLoading
-          ? "loading"
-          : standby.data?.standby
-          ? "standby"
-          : "good"
-      }
-      statusText={
-        standby.isLoading ? "Loading" : standby.data?.standby ? "ON" : "OFF"
+        {
+          isEnabled: isStandby,
+        } as StatusBadgeProps["status"]
       }
     >
-      <Button
-        onClick={() => setStandby(!standby.data?.standby)}
-        loading={standby.isLoading}
-      >
-        Toggle Standby
+      <Button onClick={() => set(!isStandby)}>
+        {isStandby ? "Disable Standby" : "Enable Standby"}
       </Button>
     </ServiceCard>
   );
