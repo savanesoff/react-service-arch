@@ -30,8 +30,9 @@ const fetchAccount = async ({
 
   const statuses: SubscriptionStatus[] = ["active", "inactive", "expired"];
   const idx = Math.floor(Math.random() * usernames.length);
-  const profiles: ProfileData[] = Array.from({ length: 3 }, () =>
-    generateProfile({ id: Math.random().toString(36).substring(2, 15) })
+  const profiles: ProfileData[] = Array.from(
+    { length: 2 + Math.floor(Math.random() * 4) },
+    () => generateProfile({ id: Math.random().toString(36).substring(2, 15) })
   );
 
   profiles[0].primary = true; // Mark the first profile as primary

@@ -3,10 +3,12 @@ import { ServiceCard } from "../ServiceCard";
 import { Button } from "../Button";
 import { useAuth } from "../../hooks/auth";
 import { useStandby } from "../../hooks/standby/useStandby";
+import { useEnv } from "../../hooks/env/useEnv";
 
 export const AuthService: React.FC = () => {
   const { data, login, logout } = useAuth();
   const { isStandby } = useStandby();
+  const { data: env } = useEnv();
 
   return (
     <ServiceCard
@@ -27,7 +29,7 @@ export const AuthService: React.FC = () => {
             });
           }
         }}
-        disabled={isStandby}
+        disabled={isStandby || !env}
       >
         {data ? "Logout" : "Login"}
       </Button>
