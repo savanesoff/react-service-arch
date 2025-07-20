@@ -4,6 +4,7 @@ import { StandbyService } from "../StandbyService";
 import { AuthService } from "../AuthService";
 import { VodService } from "../VodService";
 import { AccountService } from "../AccountService";
+import { ConfigService } from "../ConfigService";
 
 export const ServiceDemo: React.FC = () => (
   <div className="font-mono px-16 mx-auto my-8 max-w-2/3">
@@ -11,10 +12,12 @@ export const ServiceDemo: React.FC = () => (
       React Service Architecture Demo
     </h2>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <ConfigService />
       <EnvService />
       <AuthService />
-      <AccountService />
+
       <StandbyService />
+      <AccountService />
     </div>
 
     <VodService />

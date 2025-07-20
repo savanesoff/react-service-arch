@@ -8,7 +8,7 @@ export type AppConfigContextValue = {
   /** whether the fetch should error */
   shouldError: boolean;
   /** function to set whether the fetch should error */
-  setShouldError: (shouldError: boolean) => void;
+  setShouldError: (value: boolean | ((prev: boolean) => boolean)) => void;
   /** function to simulate a network request */
   network: () => Promise<void>;
 };
