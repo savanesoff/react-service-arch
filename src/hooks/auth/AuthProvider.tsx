@@ -7,7 +7,7 @@ import {
   type LogoutData,
   type LogoutError,
 } from "./AuthContext";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAppConfig } from "../AppConfig";
 import { useEnv } from "../env/useEnv";
 import { useStandby } from "../standby/useStandby";
@@ -27,6 +27,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { data: env } = useEnv();
   const { network } = useAppConfig();
   const { isStandby } = useStandby();
+  const queryClient = useQueryClient();
 
   // Login mutation
   const login = useMutation<AuthData, LoginError, LoginProps>({
@@ -52,6 +53,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       logout.mutate();
     }
   }, [isStandby, logout]);
+
+  useEffect(() => {
+    if (!login.data) {
+      queryClient.resetQueries({ queryKey: ["account"] });
+      queryClient.resetQueries({ queryKey: ["vod"] });
+    }
+  }, [login.data, queryClient]);
   return (
     <AuthContext.Provider
       value={{
