@@ -5,6 +5,7 @@ import { AuthService } from "../AuthService";
 import { VodService } from "../VodService";
 import { AccountService } from "../AccountService";
 import { ConfigService } from "../ConfigService";
+import { ServiceDependencyMap } from "./ServiceDependencyMap";
 
 export const ServiceDemo: React.FC = () => (
   <div className="font-mono px-16 mx-auto my-8 max-w-2/3">
@@ -15,11 +16,10 @@ export const ServiceDemo: React.FC = () => (
       <ConfigService />
       <EnvService />
       <AuthService />
-
       <StandbyService />
       <AccountService />
     </div>
-
     <VodService />
+    <ServiceDependencyMap />
   </div>
 );

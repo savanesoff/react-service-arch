@@ -33,6 +33,7 @@ This demo is built for developers and teams who want to learn how to:
 - Synchronize service dependencies and cache
 - Build a visually clear UI that reflects service status and actions
 
+
 ## 🏗️ Architecture Overview
 
 Each service is implemented in its own directory under `src/hooks/`, with:
@@ -42,6 +43,45 @@ Each service is implemented in its own directory under `src/hooks/`, with:
 - A **custom hook** for consuming the service
 
 UI components are split into their own directories under `src/components/`, using barrel exports for clean imports. The app is wrapped in all service providers (in dependency order) and a global `QueryClientProvider` for react-query.
+
+## 🔗 Visual Data & Service Relations
+
+Below is a diagram showing how services and data dependencies are set up in this demo. Arrows indicate dependency direction (who relies on whom):
+
+```mermaid
+graph TD
+  Env[🌎 Env Service]
+  Standby[💤 Standby Service]
+  Auth[🔐 Auth Service]
+  Vod[📺 VOD Service]
+  Account[👤 Account Service]
+  Config[⚙️ Config Service]
+
+  Env --> Auth
+  Standby --> Auth
+  Auth --> Vod
+  Auth --> Account
+  Config --> Env
+  Config --> Vod
+  Config --> Account
+
+  subgraph UI
+    Env
+    Standby
+    Auth
+    Vod
+    Account
+    Config
+  end
+```
+
+**Legend:**
+- **Env → Auth**: Auth is disabled if Env is unset.
+- **Standby → Auth**: Standby can force Auth to log out.
+- **Auth → Vod/Account**: Vod and Account require authentication.
+- **Config → All**: Config can simulate network latency/errors for all services.
+
+This diagram helps visualize how global state and service dependencies propagate through the app, making the architecture easy to understand at a glance.
 
 ## 🧩 Services
 
