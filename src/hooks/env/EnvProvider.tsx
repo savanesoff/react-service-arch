@@ -28,6 +28,8 @@ export const EnvProvider = ({
   const props = useQuery<EnvData>({
     queryKey: ["env", env],
     queryFn: () => network().then(() => fetchEnv(env)),
+    refetchOnWindowFocus: false, // Disable refetching on window focus
+    staleTime: Infinity, // Prevents refetching unless filters change
   });
 
   return (

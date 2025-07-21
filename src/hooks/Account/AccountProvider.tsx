@@ -68,6 +68,8 @@ export const AccountProvider = ({
       clientQuery.invalidateQueries({ queryKey: invalidateQueries });
       return network().then(() => fetchAccount({ authData: login.data }));
     },
+    refetchOnWindowFocus: false, // Disable refetching on window focus
+    staleTime: Infinity, // Prevents refetching unless filters change
   });
 
   useEffect(() => {
