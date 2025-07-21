@@ -5,12 +5,14 @@ import { AppConfigProvider } from "./hooks/AppConfig";
 import { AccountProvider } from "./hooks/Account/AccountProvider";
 import { StandbyProvider } from "./hooks/standby/StandbyProvider";
 import { EnvProvider } from "./hooks/env/EnvProvider";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const queryClient = new QueryClient();
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false} />
       <AppConfigProvider>
         <StandbyProvider>
           <EnvProvider env="staging">
