@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { ServiceCard } from "../ServiceCard";
 import { Button } from "../Button";
 import { useAuth } from "../../hooks/auth";
@@ -10,6 +10,16 @@ export const AuthService: React.FC = () => {
   const { isStandby } = useStandby();
   const { data: env } = useEnv();
 
+  const onClick = useCallback(() => {
+    if (data) {
+      logout.mutateAsync();
+    } else {
+      login.mutateAsync({
+        username: Math.random().toString(36).substring(2, 10),
+        password: "password",
+      });
+    }
+  }, [data, login, logout]);
   return (
     <ServiceCard
       title={`Auth Service (${
@@ -17,20 +27,7 @@ export const AuthService: React.FC = () => {
       })`}
       status={!login.data ? login : logout}
     >
-      <Button
-        variant="danger"
-        onClick={() => {
-          if (data) {
-            logout.mutateAsync();
-          } else {
-            login.mutateAsync({
-              username: Math.random().toString(36).substring(2, 10),
-              password: "password",
-            });
-          }
-        }}
-        disabled={isStandby || !env}
-      >
+      <Button variant="danger" onClick={onClick} disabled={isStandby || !env}>
         {data ? "Logout" : "Login"}
       </Button>
     </ServiceCard>

@@ -40,7 +40,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   });
 
   // Logout mutation
-  const logout = useMutation<LogoutData, LogoutError, void>({
+  const { mutate: logoutMutate, ...logout } = useMutation<
+    LogoutData,
+    LogoutError,
+    void
+  >({
     mutationKey: ["logout"],
     mutationFn: async (): Promise<LogoutData> => {
       login.reset();
@@ -50,9 +54,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (isStandby) {
-      logout.mutate();
+      logoutMutate();
     }
-  }, [isStandby, logout]);
+  }, [isStandby, logoutMutate]);
 
   useEffect(() => {
     if (!login.data) {
@@ -66,7 +70,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         data: login.data,
         busy: login.isPending || logout.isPending,
         login,
-        logout,
+        logout: { ...logout, mutate: logoutMutate },
       }}
     >
       {children}
